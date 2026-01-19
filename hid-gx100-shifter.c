@@ -11,6 +11,9 @@
 #include <linux/module.h>
 #include <linux/usb.h>
 
+#define USB_VENDOR_ID_GX               0x04b0
+#define USB_PRODUCT_ID_GX100_HANDBRAKE   0x5750
+
 /*
 Original descriptor
 0x05, 0x01,        // Usage Page (Generic Desktop Ctrls)
@@ -63,7 +66,7 @@ static const __u8 *shifter_report_fixup(struct hid_device *hid, __u8 *rdesc, uns
 }
 
 static const struct hid_device_id shifter_devices[] = {
-    { HID_USB_DEVICE(0x04b0, 0x5750) },
+    { HID_USB_DEVICE(USB_VENDOR_ID_GX, USB_PRODUCT_ID_GX100_HANDBRAKE) },
     { }
 };
 
