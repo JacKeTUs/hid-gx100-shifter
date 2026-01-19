@@ -44,43 +44,19 @@ Original descriptor
 // best guess: USB HID Report Descriptor
 */
 
-//basic
-static const __u8 shifter_rdesc[] = {
-
-    0x05, 0x01,        // Usage Page (Generic Desktop)
-    0x09, 0x04,        // Usage (Joystick)
-    0xA1, 0x01,        // Collection (Application)
-
-    // ---- Buttons: first 16 bits of report ----
-    0x05, 0x09,        //   Usage Page (Button)
-    0x19, 0x01,
-    0x29, 0x10,        //   Button 1..16
-    0x15, 0x00,
-    0x25, 0x01,
-    0x95, 0x10,        //   16 buttons
-    0x75, 0x01,
-    0x81, 0x02,        //   Input (Data,Var,Abs)
-
-    // ---- Ignore remaining 14 bytes ----
-    0x95, 0x0E,        //   14 bytes
-    0x75, 0x08,
-    0x81, 0x03,        //   Input (Const)
-
-    0xC0
-};
-
 static const __u8 *shifter_report_fixup(struct hid_device *hid, __u8 *rdesc, unsigned int *rsize)
 {
-    if (*rsize == 50 && rdesc[0] == 0x05 && rdesc[1] == 0x01 && rdesc[2] == 0x09 && rdesc[3] == 0x05) {
+    if (*rsize == 50 && rdesc[2] == 0x09 && rdesc[3] == 0x05 && rdesc[4] == 0xA1 && rdesc[5] == 0x02) {
         hid_info(hid,
              "fixing up GX100 shifter report descriptor\n");
 
-        *rsize = sizeof(shifter_rdesc);
-        return shifter_rdesc;
+        rdesc[3] = 0x04; // Usage Joystick
+        rdesc[5] = 0x01; // Collection Application
+        return rdesc;
     } else {
         hid_info(hid,
-             "Descriptor size is %d, rdesc[7] is %d, rdesc[81] is %d, rdesc[83] is %d"
-             "skipping fixup\n", *rsize, rdesc[7], rdesc[81], rdesc[83]);
+             "Descriptor size is %d, 3rd-6th bytes are %02x %02x %02x %02x"
+             "skipping fixup\n", *rsize, rdesc[3], rdesc[4], rdesc[5], rdesc[6]);
     }
 
     return rdesc;
