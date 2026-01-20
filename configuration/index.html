@@ -521,13 +521,13 @@ async function bindDevice() {
 function handleInputReport(event) {
     const report = new Uint8Array(event.data.buffer);
     
-    /* Parse sensor values from bytes 3-8 (6 sensors for gears 1-6) */
-    if (report.length >= 8) {
-        /* Update gear displays */
+    /* Parse sensor values */
+    if (report.length >= 14) {
         for (let i = 1; i <= 6; i++) {
-            const sensorByte = report[2 + i];
+            const byteOffset = 2 + (i - 1) * 2;
+            const sensorValue = (report[byteOffset] << 8) | report[byteOffset + 1];
             if (gearDisplays[i]) {
-                gearDisplays[i].textContent = sensorByte.toString(16).padStart(2, '0').toUpperCase();
+                gearDisplays[i].textContent = sensorValue.toString();
             }
         }
         
