@@ -521,8 +521,8 @@ async function bindDevice() {
 function handleInputReport(event) {
     const report = new Uint8Array(event.data.buffer);
     
-    if (report.length >= 3) {
-        const buttonBits = (report[0] << 8) | report[1];
+    if (report.length >= 2) {
+        const buttonBits = (report[1] << 8) | report[0];
         /*
         ordering is gears 1-8 are buttons 1-8, then seq -/+, then reverse
         Pull ring and shifting into 1 emits a distinct button 11 for reverse
