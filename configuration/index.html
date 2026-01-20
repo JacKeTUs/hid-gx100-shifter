@@ -560,6 +560,10 @@ async function bindDevice() {
     }
 }
 
+function isPressed(buttonBits, buttonNum) {
+    return (buttonBits & (1 << (i - 1))) !== 0;
+}
+
 function handleInputReport(event) {
     const report = new Uint8Array(event.data.buffer);
     
@@ -572,44 +576,30 @@ function handleInputReport(event) {
         15 is pull ring button if enabled
         */
 
-        for (let i = 1; i <= 16; i++) {
-            const isPressed = (buttonBits & (1 << (i - 1))) !== 0;
-            let gearBox;
-            if (i <= 6) {
-                gearBox = gearDisplays[i].parentElement;
-            }
-            if (i == 7) {
-                gearBox = gearDisplays[5].parentElement;
-                const gearLabel = gearBox.querySelector('.gear-label');
-                if (gearLabel) {
-                    gearLabel.textContent = isPressed ? '7' : '5';
-                }
-            }
-            if (i == 8) {
-                gearBox = gearDisplays[6].parentElement;
-                const gearLabel = gearBox.querySelector('.gear-label');
-                if (gearLabel) {
-                    gearLabel.textContent = isPressed ? '8' : '6';
-                }
-            }
-            if (i == 9) {
-                gearBox = seqGearDisplays[2].parentElement;
-            }
-            if (i == 10) {
-                gearBox = seqGearDisplays[1].parentElement;
-            }
-            if (i == 11) {
-                gearBox = gearDisplays[1].parentElement;
-                const gearLabel = gearBox.querySelector('.gear-label');
-                if (gearLabel) {
-                    gearLabel.textContent = isPressed ? 'R' : '1';
-                }
-            }
-            if (i > 11) {
-                gearBox = buttonDisplays[i - 11].parentElement;
-            }
+        // Update gearDisplays:
+        gearDisplays[1].parentElement.classList.toggle('active', isPressed(buttonBits, 1) || isPressed(buttonBits, 11));
+        gearDisplays[1].parentElement.querySelector('.gear-label').textContent = isPressed(buttonBits, 11) ? 'R' : '1';
+        
+        gearDisplays[2].parentElement.classList.toggle('active', isPressed(buttonBits, 2));
+        gearDisplays[3].parentElement.classList.toggle('active', isPressed(buttonBits, 3));
+        gearDisplays[4].parentElement.classList.toggle('active', isPressed(buttonBits, 4));
+       
+        gearDisplays[5].parentElement.classList.toggle('active', isPressed(buttonBits, 5) || isPressed(buttonBits, 7));
+        gearDisplays[5].parentElement.querySelector('.gear-label').textContent = isPressed(buttonBits, 7) ? '7' : '5';
+
+        gearDisplays[6].parentElement.classList.toggle('active', isPressed(buttonBits, 6) || isPressed(buttonBits, 8));
+        gearDisplays[6].parentElement.querySelector('.gear-label').textContent = isPressed(buttonBits, 8) ? '8' : '6';
+
+
+        // Update seqDisplays:
+        seqGearDisplays[2].parentElement.classList.toggle('active', isPressed(buttonBits, 9))
+        seqGearDisplays[1].parentElement.classList.toggle('active', isPressed(buttonBits, 10))
+
+        // Update buttonDisplays:
+        for (let i = 12; i <= 16; i++) {
+            gearBox = buttonDisplays[i - 11].parentElement;
             if (gearBox) {
-                gearBox.classList.toggle('active', isPressed);
+                gearBox.classList.toggle('active', isPressed(buttonBits, i));
             }
         }
     }
