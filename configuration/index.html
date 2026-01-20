@@ -107,8 +107,9 @@ button:disabled {
 .buttons-layout {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
     grid-template-areas:
+        "gear-box"
         "gear-box"
         "gear-box"
         "gear-box"
@@ -332,6 +333,9 @@ button:disabled {
                     <div class="gear-box">
                         <div class="gear-label" id="but4">4</div>
                     </div>
+                    <div class="gear-box">
+                        <div class="gear-label" id="but5">5</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -390,7 +394,8 @@ const buttonDisplays = {
     1: document.getElementById("but1"),
     2: document.getElementById("but2"),
     3: document.getElementById("but3"),
-    4: document.getElementById("but4")
+    4: document.getElementById("but4"),
+    5: document.getElementById("but5")
 };
 
 /* ---------- Defaults ---------- */
