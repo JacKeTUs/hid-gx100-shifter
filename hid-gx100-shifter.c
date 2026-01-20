@@ -80,5 +80,6 @@ static struct hid_driver shifter_driver = {
 module_hid_driver(shifter_driver);
 
 MODULE_AUTHOR("R Orth <giantorth@gmail.com>");
+MODULE_AUTHOR("Oleg Makarenko <oleg@makarenk.ooo>");
 MODULE_DESCRIPTION("HID driver for chinese GX100 shifter");
 MODULE_LICENSE("GPL");
