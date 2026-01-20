@@ -521,6 +521,38 @@ async function bindDevice() {
 function handleInputReport(event) {
     const report = new Uint8Array(event.data.buffer);
     
+    if (report.length >= 3) {
+        const buttonBits = (report[0] << 8) | report[1];
+        
+        for (let i = 1; i <= 16; i++) {
+            const isPressed = (buttonBits & (1 << (i - 1))) !== 0;
+            if (i <= 6) {
+                const gearBox = gearDisplays[i].parentElement;
+                if (isPressed) {
+                    gearBox.classList.add('active');
+                } else {
+                    gearBox.classList.remove('active');
+                }
+            }
+            if (i == 7) {
+                const gearBox = seqGearDisplays[2].parentElement;
+                if (isPressed) {
+                    gearBox.classList.add('active');
+                } else {
+                    gearBox.classList.remove('active');
+                }
+            }
+            if (i == 8) {
+                const gearBox = seqGearDisplays[1].parentElement;
+                if (isPressed) {
+                    gearBox.classList.add('active');
+                } else {
+                    gearBox.classList.remove('active');
+                }
+            }
+        }
+    }
+    
     /* Parse sensor values */
     if (report.length >= 14) {
         for (let i = 1; i <= 6; i++) {
