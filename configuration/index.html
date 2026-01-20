@@ -524,7 +524,7 @@ function handleInputReport(event) {
     /* Parse sensor values */
     if (report.length >= 14) {
         for (let i = 1; i <= 6; i++) {
-            const byteOffset = 2 + (i - 1) * 2;
+            const byteOffset = 3 + (i - 1) * 2;
             const sensorValue = (report[byteOffset] << 8) | report[byteOffset + 1];
             if (gearDisplays[i]) {
                 gearDisplays[i].textContent = sensorValue.toString();
