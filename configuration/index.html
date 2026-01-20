@@ -620,11 +620,12 @@ function toggleSeqCalibration() {
 function applyConfig() {
     const r = new Uint8Array(64);
     r[0] = 0x02; // Report ID ??
-    r[1] = 0x01;
+    r[1] = settings.cb1.checked ? 0x01 : 0x00;
+    r[2] = settings.cb2.checked ? 0x01 : 0x00;
     r[3] = settings.cbSeq.checked ? 0x01 : 0x00;
     r[4] = settings.hAdj.value & 0xFF;
     r[6] = settings.seqAdj.value & 0xFF;
-    r[8] = settings.cb1.checked ? 0x01 : 0x00;
+    r[8] = settings.cbPull.checked ? 0x01 : 0x00;
     sendReport(r);
 }
 
