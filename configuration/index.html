@@ -462,14 +462,40 @@ function getLastDevice() {
     return null;
 }
 
+async function connectToDevice(device) {
+    console.log(`[HID] Attempting to connect to: ${device.productName}`);
+    
+    let connected = false;
+    try {
+        await device.open();
+        connected = true;
+    } catch (openError) {
+        console.warn(`[HID] Failed to open device:`, openError.message);
+    }
+    
+    if (connected) {
+        device.addEventListener('inputreport', handleInputReport);
+        
+        document.getElementById('deviceName').textContent = `Connected: ${device.productName}`;
+        console.log(`[HID] Auto-connected to device: ${device.productName}`);
+
+        saveLastDevice(device);
+
+        lockUI(false);
+    } else {
+        lockUI(true);
+        alert("Failed to connect to device: " + e.message);
+    }
+}
+
 /* ---------- Auto-connect on page load ---------- */
 async function autoConnectDevice() {
     try {
         const devices = await navigator.hid.getDevices();
-        console.log(`[HID] Found ${devices.length} remembered device(s)`);
+        console.log(`[HID] Found ${devices.length} device(s)`);
         
         if (devices.length === 0) {
-            console.log(`[HID] No remembered devices found`);
+            console.log(`[HID] No devices found`);
             return;
         }
         
@@ -491,35 +517,8 @@ async function autoConnectDevice() {
             }
         }
         
-        /* If last device not found, use first device */
-        if (!targetDevice && devices.length > 0) {
-            targetDevice = devices[0];
-            console.log(`[HID] Using first available device: ${targetDevice.productName}`);
-        }
-        
         if (targetDevice) {
-            device = targetDevice;
-            console.log(`[HID] Attempting to connect to: ${device.productName}`);
-            
-            let connected = false;
-            try {
-                await device.open();
-                connected = true;
-            } catch (openError) {
-                console.warn(`[HID] Failed to open device:`, openError.message);
-            }
-            
-            if (connected) {
-                /* Set up input report listener */
-                device.addEventListener('inputreport', handleInputReport);
-                
-                /* Update device name display */
-                document.getElementById('deviceName').textContent = `Connected: ${device.productName}`;
-                console.log(`[HID] Auto-connected to device: ${device.productName}`);
-                lockUI(false);
-            } else {
-                console.log(`[HID] Device could not be opened`);
-            }
+            await connectToDevice(targetDevice);
         }
     } catch (e) {
         console.error(`[HID] Auto-connect failed:`, e);
@@ -529,35 +528,16 @@ async function autoConnectDevice() {
 /* Auto-connect when page loads */
 window.addEventListener('load', autoConnectDevice);
 
-/* ---------- HID ---------- */
+
 async function bindDevice() {
-    try {
-        const devices = await navigator.hid.requestDevice({
-            filters: [{ vendorId: 0x04b0, productId: 0x5750 }]
-            //filters: []
-        });
+    const devices = await navigator.hid.requestDevice({
+        filters: [{ vendorId: 0x04b0, productId: 0x5750 }]
+    });
 
-        if (!devices.length)
-            return;
+    if (!devices.length)
+        return;
 
-        device = devices[0];
-        await device.open();
-        
-        /* Set up input report listener */
-        device.addEventListener('inputreport', handleInputReport);
-        
-        /* Save device for auto-connect on next refresh */
-        saveLastDevice(device);
-        
-        /* Update device name display */
-        document.getElementById('deviceName').textContent = `Connected: ${device.productName}`;
-        console.log(`[HID] Connected to device: ${device.productName}`);
-        
-        lockUI(false);
-    } catch (e) {
-        lockUI(true);
-        alert("Failed to bind device: " + e.message);
-    }
+    await connectToDevice(devices[0]);
 }
 
 function isPressed(buttonBits, buttonNum) {
