@@ -540,7 +540,7 @@ function handleInputReport(event) {
     }
 }
 
-function sendReport(id, data) {
+function sendReport(data) {
     if (device) {
         try {
             /* Convert data to hex string for logging */
@@ -548,10 +548,10 @@ function sendReport(id, data) {
                 .map(b => b.toString(16).padStart(2, '0').toUpperCase())
                 .join(' ');
             
-            console.log(`[HID] Sending report ID: ${id}, Data (${data.length} bytes):`);
+            console.log(`[HID] Sending report ID: ${data[0]}, Data (${data.length} bytes):`);
             console.log(`[HID] ${hexString}`);
             
-            device.sendReport(id, data);
+            device.sendReport(data[0], data.slice(1));
             console.log(`[HID] Report sent successfully`);
         } catch (e) {
             console.error(`[HID] Error sending report:`, e);
@@ -564,9 +564,9 @@ function sendReport(id, data) {
 /* ---------- Calibration ---------- */
 function toggleHCalibration() {
     const r = new Uint8Array(64);
-    r[0] = 0x01;
+    r[0] = 0x01; // Report ID
     r[1] = hCalibrating ? 0x02 : 0x01;
-    sendReport(0x01, r);
+    sendReport(r);
 
     hCalibrating = !hCalibrating;
     hBtn.textContent = hCalibrating ? "Finish" : "Start calibration";
@@ -575,9 +575,9 @@ function toggleHCalibration() {
 
 function toggleSeqCalibration() {
     const r = new Uint8Array(64);
-    r[0] = 0x01;
+    r[0] = 0x01; // Report ID
     r[1] = seqCalibrating ? 0x04 : 0x03;
-    sendReport(0x01, r);
+    sendReport(r);
 
     seqCalibrating = !seqCalibrating;
     seqBtn.textContent = seqCalibrating ? "Finish" : "Start calibration";
@@ -587,13 +587,13 @@ function toggleSeqCalibration() {
 /* ---------- Apply ---------- */
 function applyConfig() {
     const r = new Uint8Array(64);
-    r[0] = 0x02;
+    r[0] = 0x02; // Report ID
     r[1] = 0x01;
     r[3] = settings.cbSeq.checked ? 0x01 : 0x00;
     r[4] = settings.hAdj.value & 0xFF;
     r[6] = settings.seqAdj.value & 0xFF;
     r[8] = settings.cb1.checked ? 0x01 : 0x00;
-    sendReport(0x02, r);
+    sendReport(r);
 }
 
 /* ---------- Hooks ---------- */
