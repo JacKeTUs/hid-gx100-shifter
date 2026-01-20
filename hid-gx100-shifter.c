@@ -58,7 +58,7 @@ static const __u8 *shifter_report_fixup(struct hid_device *hid, __u8 *rdesc, uns
         return rdesc;
     } else {
         hid_info(hid,
-             "Descriptor size is %d, 3rd-6th bytes are %02x %02x %02x %02x"
+             "Descriptor size is %d, 3rd-6th bytes are %02x %02x %02x %02x, "
              "skipping fixup\n", *rsize, rdesc[3], rdesc[4], rdesc[5], rdesc[6]);
     }
 
