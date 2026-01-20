@@ -104,6 +104,18 @@ button:disabled {
     gap: 12px;
 }
 
+.buttons-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    grid-template-areas:
+        "gear-box"
+        "gear-box"
+        "gear-box"
+        "gear-box";
+    gap: 12px;
+}
+
 .gear-box {
     background: #1e1e1e;
     border: 2px solid #444;
@@ -304,6 +316,24 @@ button:disabled {
                     </div>
                 </div>
             </div>
+
+            <div class="shifter-container">
+                <h3>Buttons</h3>
+                <div class="buttons-layout">
+                    <div class="gear-box">
+                        <div class="gear-label" id="but1">1</div>
+                    </div>
+                    <div class="gear-box">
+                        <div class="gear-label" id="but2">2</div>
+                    </div>
+                    <div class="gear-box">
+                        <div class="gear-label" id="but3">3</div>
+                    </div>
+                    <div class="gear-box">
+                        <div class="gear-label" id="but4">4</div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="footer">
@@ -354,6 +384,13 @@ const gearDisplays = {
 const seqGearDisplays = {
     1: document.getElementById("seqGear1"),
     2: document.getElementById("seqGear2")
+};
+
+const buttonDisplays = {
+    1: document.getElementById("but1"),
+    2: document.getElementById("but2"),
+    3: document.getElementById("but3"),
+    4: document.getElementById("but4")
 };
 
 /* ---------- Defaults ---------- */
@@ -562,6 +599,9 @@ function handleInputReport(event) {
                 if (gearLabel) {
                     gearLabel.textContent = isPressed ? 'R' : '1';
                 }
+            }
+            if (i > 11) {
+                gearBox = buttonDisplays[i - 11].parentElement;
             }
             if (gearBox) {
                 gearBox.classList.toggle('active', isPressed);
