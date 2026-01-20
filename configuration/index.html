@@ -548,10 +548,10 @@ function sendReport(data) {
                 .map(b => b.toString(16).padStart(2, '0').toUpperCase())
                 .join(' ');
             
-            console.log(`[HID] Sending report ID: ${data[0]}, Data (${data.length} bytes):`);
+            console.log(`[HID] Sending report ID: 0 (${data[0]}), Data (${data.length} bytes):`);
             console.log(`[HID] ${hexString}`);
             
-            device.sendReport(data[0], data.slice(1));
+            device.sendReport(0, data);
             console.log(`[HID] Report sent successfully`);
         } catch (e) {
             console.error(`[HID] Error sending report:`, e);
@@ -564,7 +564,7 @@ function sendReport(data) {
 /* ---------- Calibration ---------- */
 function toggleHCalibration() {
     const r = new Uint8Array(64);
-    r[0] = 0x01; // Report ID
+    r[0] = 0x01; // Report ID ??
     r[1] = hCalibrating ? 0x02 : 0x01;
     sendReport(r);
 
@@ -575,7 +575,7 @@ function toggleHCalibration() {
 
 function toggleSeqCalibration() {
     const r = new Uint8Array(64);
-    r[0] = 0x01; // Report ID
+    r[0] = 0x01; // Report ID ??
     r[1] = seqCalibrating ? 0x04 : 0x03;
     sendReport(r);
 
@@ -587,7 +587,7 @@ function toggleSeqCalibration() {
 /* ---------- Apply ---------- */
 function applyConfig() {
     const r = new Uint8Array(64);
-    r[0] = 0x02; // Report ID
+    r[0] = 0x02; // Report ID ??
     r[1] = 0x01;
     r[3] = settings.cbSeq.checked ? 0x01 : 0x00;
     r[4] = settings.hAdj.value & 0xFF;
