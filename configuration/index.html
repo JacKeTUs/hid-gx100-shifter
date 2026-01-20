@@ -523,32 +523,48 @@ function handleInputReport(event) {
     
     if (report.length >= 3) {
         const buttonBits = (report[0] << 8) | report[1];
-        
+        /*
+        ordering is gears 1-8 are buttons 1-8, then seq -/+, then reverse
+        Pull ring and shifting into 1 emits a distinct button 11 for reverse
+        Same with gears 5/6 with pull ring emits 7/8
+        15 is pull ring button if enabled
+        */
+
         for (let i = 1; i <= 16; i++) {
             const isPressed = (buttonBits & (1 << (i - 1))) !== 0;
+            let gearBox;
             if (i <= 6) {
-                const gearBox = gearDisplays[i].parentElement;
-                if (isPressed) {
-                    gearBox.classList.add('active');
-                } else {
-                    gearBox.classList.remove('active');
-                }
+                gearBox = gearDisplays[i].parentElement;
             }
             if (i == 7) {
-                const gearBox = seqGearDisplays[2].parentElement;
-                if (isPressed) {
-                    gearBox.classList.add('active');
-                } else {
-                    gearBox.classList.remove('active');
+                gearBox = gearDisplays[5].parentElement;
+                const gearLabel = gearBox.querySelector('.gear-label');
+                if (gearLabel) {
+                    gearLabel.textContent = isPressed ? '7' : '5';
                 }
             }
             if (i == 8) {
-                const gearBox = seqGearDisplays[1].parentElement;
-                if (isPressed) {
-                    gearBox.classList.add('active');
-                } else {
-                    gearBox.classList.remove('active');
+                gearBox = gearDisplays[6].parentElement;
+                const gearLabel = gearBox.querySelector('.gear-label');
+                if (gearLabel) {
+                    gearLabel.textContent = isPressed ? '8' : '6';
                 }
+            }
+            if (i == 9) {
+                gearBox = seqGearDisplays[2].parentElement;
+            }
+            if (i == 10) {
+                gearBox = seqGearDisplays[1].parentElement;
+            }
+            if (i == 11) {
+                gearBox = gearDisplays[1].parentElement;
+                const gearLabel = gearBox.querySelector('.gear-label');
+                if (gearLabel) {
+                    gearLabel.textContent = isPressed ? 'R' : '1';
+                }
+            }
+            if (gearBox) {
+                gearBox.classList.toggle('active', isPressed);
             }
         }
     }
