@@ -462,24 +462,25 @@ function getLastDevice() {
     return null;
 }
 
-async function connectToDevice(device) {
-    console.log(`[HID] Attempting to connect to: ${device.productName}`);
+async function connectToDevice(dev) {
+    console.log(`[HID] Attempting to connect to: ${dev.productName}`);
     
     let connected = false;
     try {
-        await device.open();
+        await dev.open();
         connected = true;
     } catch (openError) {
         console.warn(`[HID] Failed to open device:`, openError.message);
     }
     
     if (connected) {
-        device.addEventListener('inputreport', handleInputReport);
+        dev.addEventListener('inputreport', handleInputReport);
         
-        document.getElementById('deviceName').textContent = `Connected: ${device.productName}`;
-        console.log(`[HID] Auto-connected to device: ${device.productName}`);
+        document.getElementById('deviceName').textContent = `Connected: ${dev.productName}`;
+        console.log(`[HID] Connected to device: ${dev.productName}`);
 
-        saveLastDevice(device);
+        saveLastDevice(dev);
+        device = dev;
 
         lockUI(false);
     } else {
