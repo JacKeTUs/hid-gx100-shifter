@@ -541,7 +541,7 @@ async function bindDevice() {
 }
 
 function isPressed(buttonBits, buttonNum) {
-    return (buttonBits & (1 << (i - 1))) !== 0;
+    return (buttonBits & (1 << (buttonNum - 1))) !== 0;
 }
 
 function handleInputReport(event) {
